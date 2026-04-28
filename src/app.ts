@@ -1,7 +1,18 @@
 import express, { Application, NextFunction, Request, Response } from "express";
+import personRoutes from "./routes/person.route";
 const app: Application = express();
 app.use(express.json()); //json input
 app.use(express.urlencoded({ extended: true }));   //x-www-from-urlencoded
+
+
+
+
+app.use("/api/persons",   // base path/prefix
+    personRoutes   // router object
+);
+
+
+
 const PORT: number = 8089;
 app.get(
     "/", // path
