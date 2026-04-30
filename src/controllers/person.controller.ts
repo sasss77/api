@@ -37,10 +37,20 @@ export class PersonController {
 
     }
 
-    
+       // API consistency
+    // 1. Consistent response structure
+    // 2. logic through exceptions
+    // 3. combine response and error handling
+
     async addPerson(req: Request, res: Response) {
       
-            const { name, age } = req.body; //body parameters/ client data
+        const { name, age } = req.body; //body parameters/ client data
+        if (!name) {
+            throw new HttpException(404, "Name is required");
+        }
+        if (!age) {
+            throw new HttpException(404, "Age is required");
+        }
             const newPerson: Person = {
                 id: dataset.length + 1,
                 name,
@@ -48,11 +58,15 @@ export class PersonController {
             }
             dataset.push(newPerson); //add to dataset
           
-            return res.json(newPerson);
+        // return res.json(newPerson);
+        return ApiResponseHelper.success(
+            res,newPerson, "Person cerated successfully", 201
+        );
       
         
     }
-    // API consistency
+ 
+
 
 }
 
