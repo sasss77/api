@@ -1,5 +1,7 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import personRoutes from "./routes/person.route";
+import { HttpException } from "./exceptions/http-exception";
+import { ApiResponseHelper } from "./utils/apihelper.util";
 const app: Application = express();
 app.use(express.json()); //json input
 app.use(express.urlencoded({ extended: true }));   //x-www-from-urlencoded
@@ -43,9 +45,17 @@ app.use(
 
 // global error handler
 app.use(
-    (err: Error, re: Request, res: Response, next: NextFunction) => {
+    (err: Error, req: Request, res: Response, next: NextFunction) => {
         console.error("error:", err);
-        return res.status(500).json({message: "Internal Server Error"});
+        // return res.status(500).json({message: "Internal Server Error"});
+        if (err instanceof HttpException) {
+            return ApiResponseHelper.error(
+                res, err.message, err.status
+            );
+        }
+        return ApiResponseHelper.error(
+            res, "Internal server error", 500
+        );
     }
 );
 

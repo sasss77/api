@@ -1,8 +1,17 @@
 import { Request, Response } from "express";
 import { dataset } from "../models/person.model";
-import { Person } from "../types/person.type";
+import { person } from "../types/person.type";
 import { ApiResponseHelper } from "../utils/apihelper.util";
 import { HttpException } from "../exceptions/http-exception";
+import { CreatePersonDTO } from "../dtos/person.dto";
+import { z } from "zod";
+
+
+
+
+
+
+
 
 export class PersonController {
     async getAllPersons(req: Request, res: Response) {
@@ -43,7 +52,13 @@ export class PersonController {
     // 3. combine response and error handling
 
     async addPerson(req: Request, res: Response) {
-      
+        const parsedData = CreatePersonDTO.safeParse(req.body);
+        if (!parsedData.success) {
+            return ApiResponseHelper.error(
+                res, z.prettifyError(parsedData.error), 400
+            );
+        }
+
         const { name, age } = req.body; //body parameters/ client data
         if (!name) {
             throw new HttpException(404, "Name is required");
@@ -51,7 +66,7 @@ export class PersonController {
         if (!age) {
             throw new HttpException(404, "Age is required");
         }
-            const newPerson: Person = {
+            const newPerson: person = {
                 id: dataset.length + 1,
                 name,
                 age
