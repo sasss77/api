@@ -1,5 +1,6 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import personRoutes from "./routes/person.route";
+import productRoutes from "./routes/product.route";
 import { HttpException } from "./exceptions/http-exception";
 import { ApiResponseHelper } from "./utils/apihelper.util";
 const app: Application = express();
@@ -12,6 +13,12 @@ app.use(express.urlencoded({ extended: true }));   //x-www-from-urlencoded
 app.use("/api/persons",   // base path/prefix
     personRoutes   // router object
 );
+
+app.use("/api/products",   // base path/prefix
+    productRoutes   // router object
+);
+
+
 
 
 
